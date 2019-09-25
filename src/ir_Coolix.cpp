@@ -44,6 +44,7 @@ using irutils::addIntToString;
 using irutils::addLabeledString;
 using irutils::addModeToString;
 using irutils::addTempToString;
+using irutils::setBit;
 
 #if SEND_COOLIX
 // Send a Coolix message
@@ -254,17 +255,13 @@ void IRCoolixAC::setClean() {
 }
 
 bool IRCoolixAC::getZoneFollow() {
-  return getNormalState() & kCoolixZoneFollowMask;
+  return GETBIT32(getNormalState(), kCoolixZoneFollowMaskOffset);
 }
 
 // Internal use only.
-void IRCoolixAC::setZoneFollow(bool state) {
+void IRCoolixAC::setZoneFollow(bool on) {
   recoverSavedState();
-  if (state) {
-    remote_state |= kCoolixZoneFollowMask;
-  } else {
-    remote_state &= ~kCoolixZoneFollowMask;
-  }
+  setBit(&remote_state, kCoolixZoneFollowMaskOffset, on);
 }
 
 void IRCoolixAC::clearSensorTemp() {
